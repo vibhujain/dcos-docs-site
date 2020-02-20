@@ -20,6 +20,44 @@ Clicking the Connect Cluster option will reveal a UI that accepts a kubeconfig f
 
 ![Add Cluster Connect](../../img/add-cluster-connect.png)
 
+In order to enable centralized API access to the connected cluster a Certificate Authority must be posted as a secret to the API server first. The following script creates a CA including a CA certificate and a private key. It then posts this CA under the name `kubernetes-root-ca` into the namespace `cert-manager` which will be created if it not already exists.
+
+```bash
+#!/usr/bin/env bash
+
+set -euo pipefail
+
+KEY_SIZE=4096
+PRIV_KEY_FILE=root-ca-private-key.pem
+CA_CERT_FILE=root-ca-certificate.pem
+
+if [ ! -f $PRIV_KEY_FILE ]; then
+    openssl genrsa -out $PRIV_KEY_FILE $KEY_SIZE
+fi
+
+if [ ! -f $CA_CERT_FILE ]; then
+    openssl req -x509 -new -nodes -key $PRIV_KEY_FILE -sha256 -days 1825 -out $CA_CERT_FILE
+fi
+
+kubectl create namespace cert-manager || true
+
+cat <<EOF | kubectl apply -f -
+---
+apiVersion: v1
+kind: Secret
+metadata:
+  name: kubernetes-root-ca
+  namespace: cert-manager
+type: kubernetes.io/tls
+data:
+  tls.crt: $(base64 -w0 < ${CA_CERT_FILE})
+  tls.key: $(base64 -w0 < ${PRIV_KEY_FILE})
+EOF
+```
+
+Once the CA secret has been posted successfully a custom kubeconfig can be retrieved shortly by visiting the `/token` endpoint
+on Kommander cluster domain. The token page will show a new button that leads to the kubeconfig for the connected cluster.
+
 ### Creating a Konvoy Cluster via Form
 
 Konvoy can create managed clusters using any configured cloud providers. See the [Operations Cloud Providers](../operations/cloud-providers) section in order to start creating Konvoy clusters.
