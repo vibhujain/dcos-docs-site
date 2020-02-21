@@ -10,17 +10,17 @@ excerpt: View clusters created with Kommander or any connected Kubernetes cluste
 
 Kommander allows you to monitor and manage very large numbers of clusters and so we make it easy to either connect existing clusters or create new clusters whose lifecycle is managed by Konvoy.
 
-From the dashboard page or the clusters page, click Add Cluster and Create Konvoy Cluster.
+From the dashboard page or the clusters page, select Add Cluster, then Create Konvoy Cluster.
 
 ![Add Cluster Options](../../img/add-cluster.png)
 
 ### Connecting an Existing Cluster
 
-Clicking the Connect Cluster option will reveal a UI that accepts a kubeconfig file that you may either paste or upload into the form. You can select the intended context from the Context select list or change the display name provided with the config. Add labels to classify your cluster. Cluster labels are matched to the selectors created for projects. Changing a cluster’s labels may add or remove the cluster from projects.
+Selecting Connect Cluster reveals a UI that accepts a kubeconfig file that you can either paste or upload into the form. You can select the intended context from the Context select list or change the display name provided with the config. Add labels to classify your cluster. Cluster labels are matched to the selectors created for projects. Changing a cluster’s labels may add or remove the cluster from projects.
 
 ![Add Cluster Connect](../../img/add-cluster-connect.png)
 
-In order to enable centralized API access to the connected cluster a Certificate Authority must be posted as a secret to the API server first. The following script creates a CA including a CA certificate and a private key. It then posts this CA under the name `kubernetes-root-ca` into the namespace `cert-manager` which will be created if it not already exists.
+To enable centralized API access to the connected cluster, a Certificate Authority must be posted as a secret to the API server first. The following script creates a CA including a CA certificate and a private key. Kommander then posts this CA under the name `kubernetes-root-ca` into the namespace `cert-manager` which will be created if it does not already exist.
 
 ```bash
 #!/usr/bin/env bash
@@ -55,14 +55,13 @@ data:
 EOF
 ```
 
-Once the CA secret has been posted successfully a custom kubeconfig can be retrieved shortly by visiting the `/token` endpoint
-on Kommander cluster domain. The token page will show a new button that leads to the kubeconfig for the connected cluster.
+After the CA secret has been posted successfully, a custom kubeconfig can be retrieved shortly by visiting the `/token` endpoint on a Kommander cluster domain. The token page then shows a new button that leads to the kubeconfig for the connected cluster.
 
 ### Creating a Konvoy Cluster via Form
 
 Konvoy can create managed clusters using any configured cloud providers. See the [Operations Cloud Providers](../operations/cloud-providers) section in order to start creating Konvoy clusters.
 
-You'll notice in the Create Konvoy Cluster form a variety of options for creating a cluster in your chosen cloud provider:
+You will notice in the Create Konvoy Cluster form a variety of options for creating a cluster in your chosen cloud provider:
 
 - **Kubernetes Version**: Indicates the version of Kubernetes to install on the cluster.
 - **Select Provider**: Choose the cloud provider credentials to use to provision the cluster.
@@ -70,11 +69,11 @@ You'll notice in the Create Konvoy Cluster form a variety of options for creatin
 - **Name**: A display name for referencing the cluster
 - **Node Pool Config**: Allows you to specify pools of nodes, their size, and quantity. By default, a control plane pool containing 3 large nodes and a worker pool containing 4 xlarge nodes are suggested by default. Additionally, you can specify labels and node taints as part of each pool.
 - **Add Labels**: By default, your cluster will have some suggested labels applied to it that reflect the cloud provider provisioning. For example, in AWS your cluster may be labelled with the datacenter region as well as `provider: aws`. Cluster labels are matched to the selectors created for projects. Changing a cluster’s labels may add or remove the cluster from projects.
-- **Add Cloud Provider Tags**: Allows you specify tags to be set on all resources created in your cloud provider for this cluster. You can add up to 10 tags in this form. Different cloud providers have varying restrictions on their tags. See the [AWS Tags User Guide][aws_tags] for more information about using tags in AWS.
+- **Add Cloud Provider Tags**: Allows you to specify tags to be set on all resources created in your cloud provider for this cluster. You can add up to 10 tags in this form. Different cloud providers have varying restrictions on their tags. See the [AWS Tags User Guide][aws_tags] for more information about using tags in AWS.
 
 ### Creating a Konvoy Cluster via YAML
 
-Clicking the Upload YAML option will allow you to utilize config generated by the Konvoy CLI tool. An example config can be created in the file `cluster.yaml` by running `konvoy init`. Ensure the correct Cloud Provider credentials are selected and add any cluster labels that apply.
+Selecting the Upload YAML option allows you to utilize config generated by the Konvoy CLI tool. An example config can be created in the file `cluster.yaml` by running `konvoy init`. Ensure the correct Cloud Provider credentials are selected and add any cluster labels that apply.
 
 ![Create Cluster Upload YAML](../../img/create-cluster-yaml.png)
 
@@ -111,19 +110,19 @@ Select an available desired version from the Version dropdown and confirm your a
 
 ### Editing an Attached cluster
 
-For an Attached cluster you can only edit lables that are assigned to it.
+For an attached cluster, you can only edit lables that are assigned to it.
 
 ![Edit an Attached Cluster](../../img/edit-cluster-attached.png)
 
 ### Editing a Managed cluster
 
-For a Managed cluster you can edit its name, labels, cloud provider tags and its node pools.
+For a managed cluster, you can edit the cluster name, labels, cloud provider tags, and its node pools.
 
 ![Edit a Cluster Form](../../img/edit-cluster-form-name.png)
 
 #### Editing a node pool
 
-When editing a node pool you can only increase the number of nodes in the pool. This is to prevent loosing any workloads that are currently running on the cluster.
+When editing a node pool you can only increase the number of nodes in the pool. This is to prevent losing any workloads that are currently running on the cluster.
 
 You can also add labels and taints to a node pool.
 
@@ -135,32 +134,32 @@ You can also add labels and taints to a node pool.
 
 ## Disconnect vs Delete
 
-When you attach a cluster to Kommander that was not created with Kommander, you may later disconnect it. This does not alter the running state of the cluster, but simply removes it from the Kommander UI.
+When you attach a cluster to Kommander that was not created with Kommander, you may later want to disconnect it. This does not alter the running state of the cluster, but simply removes it from the Kommander UI.
 
 For managed clusters created with Kommander, disconnecting the cluster is not an option, but it can be deleted. This completely removes the cluster and all of its cloud assets.
 
 <p class="message--warning"><strong>WARNING: </strong>
-If you delete the management (Konvoy) cluster, you won't be able to use Kommander to delete the managed clusters that were created by Kommander. Be sure and delete any managed clusters before finally deleting the Konvoy cluster if your intention is to delete all clusters. 
+If you delete the management (Konvoy) cluster, you will not be able to use Kommander to delete the managed clusters that were created by Kommander. Be sure to delete any managed clusters before deleting the Konvoy cluster if your intention is to delete all clusters. 
 </p>
 
 ## Statuses
 
 | Status         | Description                                                                                                                                                         |
 | -------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| Pending        | This is the initial state when a cluster is created or connected.                                                                                                   |
+| Pending        | The initial state when a cluster is created or connected.                                                                                                   |
 | Loading Data   | The cluster has been added to Kommander and we are fetching details about the cluster. This is the status before `Active`.                                          |
-| Active         | The cluster is connected to API server                                                                                                                              |
-| Provisioning\* | The cluster is being created on your cloud provider. This process can take a long time. To follow the progress of creation, click "View Logs" in the dropdown menu. |
-| Joining        | Cluster is being joined to the management cluster for federation.                                                                                                   |
+| Active         | The cluster is connected to API server.                                                                                                                              |
+| Provisioning\* | The cluster is being created on your cloud provider. This process can take a long time. To follow the progress of creation, select "View Logs" in the drop-down menu. |
+| Joining        | The cluster is being joined to the management cluster for federation.                                                                                                   |
 | Joined         | The join process is done, we wait for the first bit of data from the cluster to arrive                                                                              |
-| Deleting       | Cluster is being deleted. This process may a long time.                                                                                                             |
+| Deleting       | The cluster is being deleted. This process may a long time.                                                                                                             |
 | Error          | There has been an error connecting to the cluster or retrieving data from the cluster.                                                                              |
-| Failed\*       | The cluster has failed to be provisioned. For more info on the failure, click "View Logs" in the dropdown menu.                                                     |
-| Join Failed    | This can happen when kubefed does not have permission to create entities in the target cluster.                                                                     |
-| Unjoining      | Kubefed cleans up after itself, removing all installed resources on the target cluster.                                                                             |
+| Failed\*       | The cluster has failed to be provisioned. For more information, select "View Logs" in the drop-down menu.                                                     |
+| Join Failed    | The kubefed does not have permission to create entities in the target cluster.                                                                     |
+| Unjoining      | The Kubefed cleans up after itself, removing all installed resources on the target cluster.                                                                             |
 | Unjoined       | The cluster has been disconnected from the management cluster.                                                                                                      |
 | Unjoin Failed  | Unjoining from kubefed failed or some other error with deleting or disconnecting.                                                                                   |
-| Deleting       | The cluster and it's resources are being removed from your cloud provider. Click "View Logs" in the dropdown menu to follow progress. This process may a long time. |
+| Deleting       | The cluster and it's resources are being removed from your cloud provider. Select "View Logs" in the drop-down menu to follow progress. This process may a long time. |
 | Deleted        | The cluster and it's resources have been removed from your cloud provider.                                                                                          |
 | Provisioned\*  | The cluster has been created on your cloud provider.                                                                                                                |
 
