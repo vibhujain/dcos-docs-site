@@ -4,17 +4,17 @@ navigationTitle: Managing Nodes
 title: Managing Nodes
 menuWeight: 5
 excerpt: Adding compute capacity to your Konvoy cluster
- 
+enterprise: false
 ---
 
 <!-- markdownlint-disable MD004 MD007 MD025 MD030 -->
 
 # Adding Nodes to an AWS / Azure Cluster
 
-<p class="message--note"><strong>NOTE: </STRONG> This process only applies to clusters created by Konvoy, using Terraform.
+<p class="message--note"><strong>NOTE: </strong> This process only applies to clusters created by Konvoy, using Terraform.
 If your cluster was provisioned manually, please follow the steps in [Adding Nodes to an On-Premise Cluster](#adding-nodes-to-an-on-premise-cluster)</p>
 
-<p class="message--note"><strong>NOTE: </STRONG> This process should only be applied to healthy clusters.
+<p class="message--note"><strong>NOTE: </strong> This process should only be applied to healthy clusters.
 If you are attempting to recover from a node failure, please see [Recovering from Node Failure](../troubleshooting/replace-a-failed-node) instead.</p>
 
 After the initial provisioning of a cluster, the same `konvoy` tools can be used to add nodes.
@@ -68,13 +68,30 @@ With this information and the files above, proceed with the following steps:
 1. Save both files (`inventory.yaml` and `cluster.yaml`).
 1. Run `konvoy up`.
 
+# Changing Nodes in an AWS / Azure Cluster
+
+Sometimes you need to change the nodes you have already deployed. For example, to use a newer machine image, you must change a `imageID` property of the node pool to the ID of the newer machine image.
+
+<p class="message--important"><strong>IMPORTANT: </strong> Changing some properties of a deployed node pool, and running `konvoy provision` or `konvoy up`, may destroy and re-create the machines in the node pool, disrupting your workloads on these machines.</p>
+
+To avoid disrupting your workloads, migrate them away from the existing node pool by following these steps:
+
+1. Add a new node pool to provide resources for your workloads. Follow the directions in [Adding Nodes to an AWS / Azure Cluster](#adding-nodes-to-an-aws--azure-cluster). As a general rule, the new node pool should provide at least as many resources as the existing one.
+1. Cordon and drain the nodes of the existing node pool with `kubectl drain`. To successfully drain the node, you may need to use the `--ignore-daemonsets` and `--delete-local-data` flags. Please see [Safely Drain a Node][drain-node] and the [kubectl commands][kubectl-drain] reference for more information.
+1. Verify that your workloads are running on other nodes.
+1. Remove all machines from the existing node pool by changing its `count` property to `0` and running `konvoy up`.
+
 # Related Community Resources
 
 - [Assign Pods to Nodes][assign-pods-to-nodes]
 - [Node Taints and Tolerations][taints-and-tolerations]
 - [Scheduling workloads with node labels and affinities][node-labels-affinity]
+- [Safely Drain a Node][drain-node]
+- [kubectl drain][kubectl-drain]
 
 [node-labels-affinity]: https://kubernetes.io/docs/concepts/configuration/assign-pod-node/
 [taints-and-tolerations]: https://kubernetes.io/docs/concepts/configuration/taint-and-toleration/
 [assign-pods-to-nodes]: https://kubernetes.io/docs/tasks/configure-pod-container/assign-pods-nodes/
 [replace-failed-node]: ../../troubleshooting/replace-a-failed-node/
+[drain-node]: https://kubernetes.io/docs/tasks/administer-cluster/safely-drain-node/
+[kubectl-drain]: https://kubernetes.io/docs/reference/generated/kubectl/kubectl-commands#drain

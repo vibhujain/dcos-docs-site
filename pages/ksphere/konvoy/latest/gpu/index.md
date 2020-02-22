@@ -108,7 +108,7 @@ spec:
 ......
   addons:
   - configRepository: https://github.com/mesosphere/kubernetes-base-addons
-    configVersion: stable-1.16.4-2
+    configVersion: testing-1.16-1.2.1
     addonsList:
 ......
     - name: nvidia
